@@ -1,5 +1,5 @@
 # DockerBasedDevelopmentSetupTemplate
-This is a Docker based development setup for php back end and angular front end, this include redis server for session management and mysql server as well
+This is a Docker based development setup for php back end and angular front end, this include redis server for session management and mysql server as well. With this, you wouldn't have to hassle configuring your local machine with anything except the IDE, all the required stuff will be installed in docker containers hence your machine will stay clean. 
 
 ## Pre requisites
 1. Docker installation
