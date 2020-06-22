@@ -1,0 +1,45 @@
+version: '3.8'
+
+services: 
+    redis:
+        image: "${REDIS_DOCKER_IMG_NAME}:${REDIS_DOCKER_IMG_VERSION}"
+        volumes: 
+            - ./docker_configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+        networks: 
+            - dev-network
+    mysql:
+        image: "${MYSQL_DOCKER_IMG_NAME}:${MYSQL_DOCKER_IMG_VERSION}"
+        volumes: 
+            - ./localData/mysql/8.0:/var/lib/mysql
+            - ./docker_configs/mysql:/etc/mysql/conf.d
+        networks: 
+            - dev-network
+        ports: 
+            - "3307:3306"
+        environment: 
+            MYSQL_ROOT_PASSWORD: root123
+    angular:
+        build: ./app/${ANGULAR_APP_SRC}
+        image: "${ANGULAR_DOCKER_IMG_NAME}:${ANGULAR_DOCKER_IMG_VERSION}"
+        volumes: 
+            - ./app/${ANGULAR_APP_SRC}:/app
+        networks: 
+            - dev-network
+    php:
+        build: ./docker_files/php_localhost
+        image: "${PHP_DOCKER_IMG_NAME}:${PHP_DOCKER_IMG_VERSION}"
+        volumes: 
+            - ./app/${PHP_APP_SRC}:/var/www/html/${PHP_APP_NAME}
+            - ./app/${ANGULAR_APP_SRC}/dist/${ANGULAR_APP_SRC}:/var/www/html/${ANGULAR_APP_NAME}
+            - ./logs/php:/usr/local/log
+        networks: 
+            - dev-network
+        ports: 
+            - "80:80"
+        depends_on: 
+            - redis
+            - mysql
+            - angular
+        
+networks: 
+    dev-network:
